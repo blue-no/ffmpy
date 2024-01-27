@@ -26,16 +26,20 @@ def iter_frames(
         raise VideoOpenError
 
     fps = vc.get(cv2.CAP_PROP_FPS)
+    fn_max = int(vc.get(cv2.CAP_PROP_FRAME_COUNT))
+
     if sec_from is not None:
         fn_from = int(np.floor(fps * sec_from))
+        if fn_from > fn_max:
+            raise VideoTimeError
         vc.set(cv2.CAP_PROP_POS_FRAMES, fn_from)
     else:
         fn_from = 0
 
     if sec_to is not None:
-        fn_to = int(np.ceil(fps * sec_to))
+        fn_to = min(int(np.ceil(fps * sec_to)), fn_max)
     else:
-        fn_to = int(vc.get(cv2.CAP_PROP_FRAME_COUNT))
+        fn_to = fn_max
 
     for fn in tqdm(range(fn_from, fn_to)):
         success, frame = vc.read()
@@ -56,8 +60,13 @@ def extract(
     sec_from: float | None,
     sec_to: float | None,
     overwrite: bool = False,
+    parent_dir: Path | None = None,
 ) -> None:
-    folder = fp.parent / fp.stem
+    if parent_dir is None:
+        folder = fp.parent / fp.stem
+    else:
+        folder = parent_dir / fp.stem
+
     if folder.exists() and not overwrite:
         raise PathExistsError
 
