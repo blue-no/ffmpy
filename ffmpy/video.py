@@ -77,20 +77,18 @@ def extract(
     namer = FramenoNamer(vc=video)
 
     try:
-        for fn, frame in iter_frames(vc=video, sec_from=sec_from, sec_to=sec_to):
+        for fn, frame in iter_frames(
+            vc=video, sec_from=sec_from, sec_to=sec_to
+        ):
             stem = namer.get(n=fn)
             sp = (folder / stem).with_suffix(".jpg")
             save_frame(frame, sp)
     finally:
         video.release()
-    for fn, frame in iter_frames(vc=video, sec_from=sec_from, sec_to=sec_to):
-        stem = namer.get(n=fn)
-        sp = (folder / stem).with_suffix(".jpg")
-        save_frame(frame, sp)
 
 
 def info(fp: Path) -> dict[str, Any]:
-    vc = load_video(fp=fp)
+    video = load_video(fp=fp)
     data = {
         "codec": cv2.CAP_PROP_FOURCC,
         "width": cv2.CAP_PROP_FRAME_WIDTH,
@@ -99,6 +97,9 @@ def info(fp: Path) -> dict[str, Any]:
         "count": cv2.CAP_PROP_FRAME_COUNT,
     }
     ret = {}
-    for key, val in data.items():
-        ret[key] = vc.get(val)
+    try:
+        for key, val in data.items():
+            ret[key] = video.get(val)
+    finally:
+        video.release()
     return ret
