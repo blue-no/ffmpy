@@ -66,7 +66,10 @@ def extract(
     video = load_video(fp=fp)
     namer = FramenoNamer(vc=video)
 
-    for fn, frame in iter_frames(vc=video, sec_from=sec_from, sec_to=sec_to):
-        stem = namer.get(n=fn)
-        sp = (folder / stem).with_suffix(".jpg")
-        save_frame(frame, sp)
+    try:
+        for fn, frame in iter_frames(vc=video, sec_from=sec_from, sec_to=sec_to):
+            stem = namer.get(n=fn)
+            sp = (folder / stem).with_suffix(".jpg")
+            save_frame(frame, sp)
+    finally:
+        video.release()
