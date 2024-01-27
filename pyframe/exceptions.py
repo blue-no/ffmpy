@@ -12,3 +12,7 @@ class FrameWriteError(Exception):
 
 class PathExistsError(Exception):
     pass
+
+
+class VideoTimeError(Exception):
+    pass
