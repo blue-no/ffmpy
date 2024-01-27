@@ -4,8 +4,8 @@ from pathlib import Path
 
 import click
 
+from . import video
 from .exceptions import *
-from .video import extract
 
 
 def timestr_to_sec(time_: str) -> float:
@@ -16,7 +16,12 @@ def timestr_to_sec(time_: str) -> float:
     return sec
 
 
-@click.command()
+@click.group()
+def cli() -> None:
+    pass
+
+
+@cli.command()
 @click.argument("videopath", type=str)
 @click.option(
     "--force",
@@ -47,7 +52,7 @@ def timestr_to_sec(time_: str) -> float:
     "save_dir",
     help="Directory where frames are saved.",
 )
-def cli(
+def extract(
     videopath: str,
     force: bool = False,
     time_start: str | None = None,
@@ -75,7 +80,7 @@ def cli(
         save_dir = Path(save_dir)
 
     try:
-        extract(
+        video.extract(
             fp=videopath,
             sec_from=time_start,
             sec_to=time_end,
@@ -98,6 +103,20 @@ def cli(
     except VideoTimeError:
         raise click.BadParameter("Time is invalid.")
     click.echo("Done.")
+
+
+@cli.command()
+@click.argument("videopath", type=str)
+def info(videopath: str) -> None:
+    videopath = Path(videopath)
+    d = video.info(fp=videopath)
+
+    click.echo(
+        f"Codec\t\t: {int(d['codec']).to_bytes(4, 'little').decode('utf-8')}"
+    )
+    click.echo(f"FPS\t\t: {d['fps']}")
+    click.echo(f"Frame Size\t: {int(d['width'])} x {int(d['height'])}")
+    click.echo(f"Frame Count\t: {int(d['count'])}")
 
 
 def main() -> None:

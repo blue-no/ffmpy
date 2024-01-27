@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
 
 import cv2
 import numpy as np
@@ -79,3 +80,18 @@ def extract(
         stem = namer.get(n=fn)
         sp = (folder / stem).with_suffix(".jpg")
         save_frame(frame, sp)
+
+
+def info(fp: Path) -> dict[str, Any]:
+    vc = load_video(fp=fp)
+    data = {
+        "codec": cv2.CAP_PROP_FOURCC,
+        "width": cv2.CAP_PROP_FRAME_WIDTH,
+        "height": cv2.CAP_PROP_FRAME_HEIGHT,
+        "fps": cv2.CAP_PROP_FPS,
+        "count": cv2.CAP_PROP_FRAME_COUNT,
+    }
+    ret = {}
+    for key, val in data.items():
+        ret[key] = vc.get(val)
+    return ret
