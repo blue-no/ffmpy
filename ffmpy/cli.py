@@ -109,7 +109,12 @@ def extract(
 @click.argument("videopath", type=str)
 def info(videopath: str) -> None:
     videopath = Path(videopath)
-    d = video.info(fp=videopath)
+    try:
+        d = video.info(fp=videopath)
+    except FileNotFoundError:
+        raise click.BadParameter("Video does not exist.")
+    except VideoOpenError:
+        raise click.BadParameter("Cannot open video.")
 
     click.echo(
         f"Codec\t\t: {int(d['codec']).to_bytes(4, 'little').decode('utf-8')}"
