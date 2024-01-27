@@ -5,7 +5,7 @@ from pathlib import Path
 import click
 
 from .exceptions import *
-from .frame import extract
+from .video import extract
 
 
 def timestr_to_sec(time_: str) -> float:
