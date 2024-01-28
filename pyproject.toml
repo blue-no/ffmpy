@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "pyframe"
-version = "0.1.1"
+version = "0.2.0"
 description = ""
 authors = []
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-opencv-python = "^4.9.0.80"
-tqdm = "^4.66.1"
+opencv-python = "^4.0.0"
 click = "7.1.2"
+tqdm = "4.58.0"
 
 
 [build-system]
