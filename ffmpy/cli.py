@@ -11,8 +11,8 @@ from .exceptions import *
 def timestr_to_sec(time_: str) -> float:
     ts = time_.split(":")
     sec = float(ts[-1])
-    sec += 60 * int(ts[-2]) if len(ts) > 2 else 0
-    sec += 3600 * int(ts[-3]) if len(ts) > 3 else 0
+    sec += 60 * int(ts[-2]) if len(ts) >= 2 else 0
+    sec += 3600 * int(ts[-3]) if len(ts) >= 3 else 0
     return sec
 
 
